@@ -98,9 +98,3 @@ Philosophie
 
 Year in Colors n’essaie pas de vous expliquer votre vie.
 Il montre simplement ce qui est, jour après jour, couleur après couleur.
-
-
-👉 README technique interne (pour devs)
-👉 ou CHANGELOG + roadmap App Store
-👉 ou on passe directement au commit Phase 1 (compilation)
->>>>>>> 3ef8e85
