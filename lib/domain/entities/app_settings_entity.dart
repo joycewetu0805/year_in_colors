@@ -1,6 +1,11 @@
-/// Paramètres de l'application - Configuration utilisateur
+import 'package:flutter/material.dart';
+
+/// ===============================
+/// PARAMÈTRES DE L'APPLICATION
+/// ===============================
+
 class AppSettingsEntity {
-  final ThemeMode themeMode;
+  final ThemeMode themeMode; // ✅ Flutter ThemeMode
   final String languageCode;
   final bool showEmojis;
   final bool showAnimations;
@@ -24,12 +29,12 @@ class AppSettingsEntity {
     this.firstLaunchCompleted = false,
   });
 
-  /// Crée des paramètres par défaut
+  /// Paramètres par défaut
   factory AppSettingsEntity.defaultSettings() {
     return const AppSettingsEntity();
   }
 
-  /// Crée une copie avec des valeurs modifiées
+  /// Copie avec modifications
   AppSettingsEntity copyWith({
     ThemeMode? themeMode,
     String? languageCode,
@@ -52,68 +57,62 @@ class AppSettingsEntity {
       autoBackupEnabled: autoBackupEnabled ?? this.autoBackupEnabled,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       notificationTime: notificationTime ?? this.notificationTime,
-      firstLaunchCompleted: firstLaunchCompleted ?? this.firstLaunchCompleted,
+      firstLaunchCompleted:
+          firstLaunchCompleted ?? this.firstLaunchCompleted,
     );
   }
 
-  /// Vérifie si un backup est nécessaire (toutes les 7 jours)
+  /// Backup requis tous les 7 jours
   bool get isBackupNeeded {
     if (lastBackupDate == null || !autoBackupEnabled) return false;
-    
-    final now = DateTime.now();
-    final difference = now.difference(lastBackupDate!);
-    return difference.inDays >= 7;
+    return DateTime.now().difference(lastBackupDate!).inDays >= 7;
   }
 
-  /// Vérifie si les notifications sont configurées et activées
+  /// Notifications actives et configurées
   bool get areNotificationsConfigured {
-    return notificationsEnabled && notificationTime != null;
+    return notificationsEnabled;
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is AppSettingsEntity &&
-        other.themeMode == themeMode &&
-        other.languageCode == languageCode &&
-        other.showEmojis == showEmojis &&
-        other.showAnimations == showAnimations &&
-        other.showConfetti == showConfetti &&
-        other.lastBackupDate == lastBackupDate &&
-        other.autoBackupEnabled == autoBackupEnabled &&
-        other.notificationsEnabled == notificationsEnabled &&
-        other.notificationTime == notificationTime &&
-        other.firstLaunchCompleted == firstLaunchCompleted;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppSettingsEntity &&
+          themeMode == other.themeMode &&
+          languageCode == other.languageCode &&
+          showEmojis == other.showEmojis &&
+          showAnimations == other.showAnimations &&
+          showConfetti == other.showConfetti &&
+          lastBackupDate == other.lastBackupDate &&
+          autoBackupEnabled == other.autoBackupEnabled &&
+          notificationsEnabled == other.notificationsEnabled &&
+          notificationTime == other.notificationTime &&
+          firstLaunchCompleted == other.firstLaunchCompleted;
 
   @override
-  int get hashCode {
-    return Object.hash(
-      themeMode,
-      languageCode,
-      showEmojis,
-      showAnimations,
-      showConfetti,
-      lastBackupDate,
-      autoBackupEnabled,
-      notificationsEnabled,
-      notificationTime,
-      firstLaunchCompleted,
-    );
-  }
+  int get hashCode => Object.hash(
+        themeMode,
+        languageCode,
+        showEmojis,
+        showAnimations,
+        showConfetti,
+        lastBackupDate,
+        autoBackupEnabled,
+        notificationsEnabled,
+        notificationTime,
+        firstLaunchCompleted,
+      );
 
   @override
   String toString() {
-    return 'AppSettingsEntity('
-        'themeMode: $themeMode, '
-        'languageCode: $languageCode, '
-        'notifications: ${notificationsEnabled ? "ON" : "OFF"})';
+    return 'AppSettingsEntity(themeMode: $themeMode, language: $languageCode)';
   }
 }
 
-/// Mode de thème supporté
-enum ThemeMode {
+/// ===============================
+/// UI HELPER (PAS UN ENUM FLUTTER)
+/// ===============================
+
+enum AppThemeOption {
   light('Clair', Icons.light_mode),
   dark('Sombre', Icons.dark_mode),
   system('Système', Icons.brightness_auto);
@@ -121,23 +120,29 @@ enum ThemeMode {
   final String label;
   final IconData icon;
 
-  const ThemeMode(this.label, this.icon);
+  const AppThemeOption(this.label, this.icon);
 
-  /// Convertit depuis une chaîne de caractères
-  factory ThemeMode.fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'light':
+  ThemeMode toThemeMode() {
+    switch (this) {
+      case AppThemeOption.light:
         return ThemeMode.light;
-      case 'dark':
+      case AppThemeOption.dark:
         return ThemeMode.dark;
-      case 'system':
+      case AppThemeOption.system:
       default:
         return ThemeMode.system;
     }
   }
 
-  /// Convertit en chaîne de caractères pour le stockage
-  String toStorageString() {
-    return toString().split('.').last;
+  static AppThemeOption fromThemeMode(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return AppThemeOption.light;
+      case ThemeMode.dark:
+        return AppThemeOption.dark;
+      case ThemeMode.system:
+      default:
+        return AppThemeOption.system;
+    }
   }
 }

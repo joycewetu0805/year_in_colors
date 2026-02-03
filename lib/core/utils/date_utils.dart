@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
-class DateUtils {
+/// Utilitaires de date pour Year in Colors
+/// Nommé AppDateUtils pour éviter conflit avec Flutter DateUtils
+class AppDateUtils {
   static final DateFormat _monthYearFormat = DateFormat('MMMM yyyy', 'fr_FR');
   static final DateFormat _dayMonthYearFormat = DateFormat('d MMMM yyyy', 'fr_FR');
   static final DateFormat _dayNameFormat = DateFormat('EEEE', 'fr_FR');
@@ -58,11 +60,12 @@ class DateUtils {
     return isSameDay(now, date);
   }
   
-  static bool isInYear2026(DateTime date) {
-    return date.year == 2026;
+  static bool isInCurrentYear(DateTime date) {
+    return date.year == DateTime.now().year;
   }
-  
-  static int getDaysInYear() {
-    return DateTime(2026, 12, 31).difference(DateTime(2026, 1, 1)).inDays + 1;
+
+  static int getDaysInYear([int? year]) {
+    final y = year ?? DateTime.now().year;
+    return DateTime(y, 12, 31).difference(DateTime(y, 1, 1)).inDays + 1;
   }
 }

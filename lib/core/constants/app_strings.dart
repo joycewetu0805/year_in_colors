@@ -281,7 +281,10 @@ class AppStrings {
     }
     return '';
   }
-  
+
+  // Alias pour getMonthName
+  static String monthName(int month) => getMonthName(month);
+
   // Fonction pour obtenir le nom court du mois
   static String getShortMonthName(int month) {
     if (month >= 1 && month <= 12) {
@@ -289,6 +292,9 @@ class AppStrings {
     }
     return '';
   }
+
+  // Alias pour getShortMonthName
+  static String monthAbbreviation(int month) => getShortMonthName(month);
   
   // Fonction pour obtenir le jour de la semaine
   static String getWeekdayName(int weekday) {

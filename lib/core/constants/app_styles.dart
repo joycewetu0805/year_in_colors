@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_dimensions.dart';
 
+
 /// Styles de texte et de thème réutilisables dans toute l'application
 class AppStyles {
   // TextStyles pour iOS-like typography
@@ -9,7 +10,7 @@ class AppStyles {
   // Large Display
   static TextStyle displayLarge(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeDisplayLarge,
+      fontSize: _getFontSize('displayLarge'),
       fontWeight: FontWeight.w100, // Ultra light pour les grands titres iOS
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: -0.5,
@@ -19,7 +20,7 @@ class AppStyles {
   // Display Medium
   static TextStyle displayMedium(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeDisplayMedium,
+      fontSize: _getFontSize('displayMedium'),
       fontWeight: FontWeight.w300,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: -0.25,
@@ -29,7 +30,7 @@ class AppStyles {
   // Display Small
   static TextStyle displaySmall(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeDisplaySmall,
+      fontSize: _getFontSize('displaySmall'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -38,7 +39,7 @@ class AppStyles {
   // Headline Large (pour les titres de page)
   static TextStyle headlineLarge(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXXXLarge,
+      fontSize: _getFontSize('xxxLarge'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.25,
@@ -48,7 +49,7 @@ class AppStyles {
   // Headline Medium
   static TextStyle headlineMedium(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXXLarge,
+      fontSize: _getFontSize('xxLarge'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -57,7 +58,7 @@ class AppStyles {
   // Headline Small
   static TextStyle headlineSmall(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXLarge,
+      fontSize: _getFontSize('xLarge'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -66,7 +67,7 @@ class AppStyles {
   // Title Large
   static TextStyle titleLarge(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeLarge,
+      fontSize: _getFontSize('large'),
       fontWeight: FontWeight.w500,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.15,
@@ -76,9 +77,9 @@ class AppStyles {
   // Title Medium (pour les sous-titres)
   static TextStyle titleMedium(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w500,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.1,
     );
   }
@@ -86,9 +87,9 @@ class AppStyles {
   // Title Small
   static TextStyle titleSmall(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w500,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.1,
     );
   }
@@ -96,31 +97,31 @@ class AppStyles {
   // Body Large (texte principal)
   static TextStyle bodyLarge(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.5,
-      height: AppDimensions.lineHeightLoose,
+      height: 1.6,
     );
   }
   
   // Body Medium
   static TextStyle bodyMedium(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.25,
-      height: AppDimensions.lineHeightMedium,
+      height: 1.5,
     );
   }
   
   // Body Small
   static TextStyle bodySmall(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMicro,
+      fontSize: _getFontSize('micro'),
       fontWeight: FontWeight.w400,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.4,
     );
   }
@@ -128,7 +129,7 @@ class AppStyles {
   // Label Large (pour les boutons)
   static TextStyle labelLarge(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w500,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.5,
@@ -138,7 +139,7 @@ class AppStyles {
   // Label Medium
   static TextStyle labelMedium(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w500,
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: 0.5,
@@ -148,9 +149,9 @@ class AppStyles {
   // Label Small
   static TextStyle labelSmall(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMicro,
+      fontSize: _getFontSize('micro'),
       fontWeight: FontWeight.w500,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.5,
     );
   }
@@ -160,7 +161,7 @@ class AppStyles {
   // Style pour la date du jour
   static TextStyle todayDateStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXXXLarge,
+      fontSize: _getFontSize('xxxLarge'),
       fontWeight: FontWeight.w300, // Light comme iOS
       color: AppColors.adaptiveTextPrimary(context),
       letterSpacing: -0.5,
@@ -170,9 +171,9 @@ class AppStyles {
   // Style pour le nom du jour
   static TextStyle dayNameStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeLarge,
+      fontSize: _getFontSize('large'),
       fontWeight: FontWeight.w400,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.25,
     );
   }
@@ -180,7 +181,7 @@ class AppStyles {
   // Style pour le statut du jour (Bon/Mauvais/Neutre)
   static TextStyle dayStatusStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXLarge,
+      fontSize: _getFontSize('xLarge'),
       fontWeight: FontWeight.w500,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -189,7 +190,7 @@ class AppStyles {
   // Style pour les cellules du calendrier
   static TextStyle calendarCellStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
     );
@@ -198,9 +199,9 @@ class AppStyles {
   // Style pour les en-têtes de calendrier
   static TextStyle calendarHeaderStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w500,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
       letterSpacing: 0.5,
     );
   }
@@ -208,7 +209,7 @@ class AppStyles {
   // Style pour les statistiques
   static TextStyle statsTitleStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeLarge,
+      fontSize: _getFontSize('large'),
       fontWeight: FontWeight.w600,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -216,7 +217,7 @@ class AppStyles {
   
   static TextStyle statsValueStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeXXLarge,
+      fontSize: _getFontSize('xxLarge'),
       fontWeight: FontWeight.w300,
       color: AppColors.adaptiveTextPrimary(context),
     );
@@ -224,9 +225,9 @@ class AppStyles {
   
   static TextStyle statsLabelStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeSmall,
+      fontSize: _getFontSize('small'),
       fontWeight: FontWeight.w400,
-      color: AppColors.textSecondaryLight,
+      color: _getTextSecondaryColor(context),
     );
   }
   
@@ -234,15 +235,15 @@ class AppStyles {
   static TextStyle percentageStyle(BuildContext context, double percentage) {
     Color color;
     if (percentage >= 70) {
-      color = AppColors.goodDay;
+      color = _getGoodDayColor();
     } else if (percentage >= 40) {
-      color = AppColors.systemYellow;
+      color = _getSystemYellowColor();
     } else {
-      color = AppColors.badDay;
+      color = _getBadDayColor();
     }
     
     return TextStyle(
-      fontSize: AppDimensions.fontSizeLarge,
+      fontSize: _getFontSize('large'),
       fontWeight: FontWeight.w600,
       color: color,
     );
@@ -251,17 +252,17 @@ class AppStyles {
   // Style pour les messages annuels
   static TextStyle yearMessageStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeLarge,
+      fontSize: _getFontSize('large'),
       fontWeight: FontWeight.w400,
       color: AppColors.adaptiveTextPrimary(context),
-      height: AppDimensions.lineHeightVeryLoose,
+      height: 1.8,
     );
   }
   
   // Style pour les boutons d'action
   static TextStyle actionButtonStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w500,
       letterSpacing: 0.25,
     );
@@ -270,27 +271,27 @@ class AppStyles {
   // Style pour les tooltips
   static TextStyle tooltipStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMicro,
+      fontSize: _getFontSize('micro'),
       fontWeight: FontWeight.w400,
-      color: AppColors.textPrimaryDark,
+      color: _getTextPrimaryDarkColor(),
     );
   }
   
   // Style pour les messages d'erreur
   static TextStyle errorStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w400,
-      color: AppColors.badDay,
+      color: _getBadDayColor(),
     );
   }
   
   // Style pour les messages de succès
   static TextStyle successStyle(BuildContext context) {
     return TextStyle(
-      fontSize: AppDimensions.fontSizeMedium,
+      fontSize: _getFontSize('medium'),
       fontWeight: FontWeight.w400,
-      color: AppColors.goodDay,
+      color: _getGoodDayColor(),
     );
   }
   
@@ -299,15 +300,11 @@ class AppStyles {
   // Décoration pour les cartes
   static BoxDecoration cardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: AppColors.adaptiveSurface(context),
-      borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusLarge),
+      color: _getAdaptiveSurfaceColor(context),
+      borderRadius: BorderRadius.circular(16.0),
       boxShadow: [
         BoxShadow(
-          color: AppColors.adaptive(
-            light: Colors.black.withOpacity(0.05),
-            dark: Colors.black.withOpacity(0.2),
-            context: context,
-          ),
+          color: _getAdaptiveShadowColor(context),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -321,14 +318,14 @@ class AppStyles {
     int value, 
     bool isSelected,
   ) {
-    final color = AppColors.getStatusColor(value);
+    final color = _getStatusColor(value);
     
     return BoxDecoration(
       color: isSelected ? color : color.withOpacity(0.1),
       shape: BoxShape.circle,
       border: Border.all(
         color: color,
-        width: isSelected ? AppDimensions.borderWidthThick : AppDimensions.borderWidthNormal,
+        width: isSelected ? 3.0 : 1.0,
       ),
     );
   }
@@ -339,14 +336,14 @@ class AppStyles {
     int value, 
     bool isToday,
   ) {
-    final color = AppColors.getStatusColor(value);
+    final color = _getStatusColor(value);
     
     return BoxDecoration(
       color: value != 0 ? color : Colors.transparent,
       shape: BoxShape.circle,
       border: Border.all(
-        color: isToday ? AppColors.accentBlue : Colors.transparent,
-        width: AppDimensions.borderWidthThick,
+        color: isToday ? _getAccentBlueColor() : Colors.transparent,
+        width: 3.0,
       ),
     );
   }
@@ -354,18 +351,18 @@ class AppStyles {
   // Décoration pour les cellules de mois
   static BoxDecoration monthCellDecoration(BuildContext context) {
     return BoxDecoration(
-      color: AppColors.adaptiveSurface(context),
-      borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+      color: _getAdaptiveSurfaceColor(context),
+      borderRadius: BorderRadius.circular(12.0),
       border: Border.all(
-        color: AppColors.adaptiveSeparator(context),
-        width: AppDimensions.borderWidthNormal,
+        color: _getAdaptiveSeparatorColor(context),
+        width: 1.0,
       ),
     );
   }
   
   // Décoration pour les indicateurs de statut
   static BoxDecoration statusIndicatorDecoration(BuildContext context, int value) {
-    final color = AppColors.getStatusColor(value);
+    final color = _getStatusColor(value);
     
     return BoxDecoration(
       color: color,
@@ -396,88 +393,79 @@ class AppStyles {
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
         borderSide: BorderSide(
-          color: hasError ? AppColors.badDay : AppColors.adaptiveSeparator(context),
-          width: AppDimensions.borderWidthNormal,
+          color: hasError ? _getBadDayColor() : _getAdaptiveSeparatorColor(context),
+          width: 1.0,
         ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
         borderSide: BorderSide(
-          color: AppColors.adaptiveSeparator(context),
-          width: AppDimensions.borderWidthNormal,
+          color: _getAdaptiveSeparatorColor(context),
+          width: 1.0,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
         borderSide: BorderSide(
-          color: AppColors.accentBlue,
-          width: AppDimensions.borderWidthThick,
+          color: _getAccentBlueColor(),
+          width: 2.0,
         ),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
         borderSide: BorderSide(
-          color: AppColors.badDay,
-          width: AppDimensions.borderWidthNormal,
+          color: _getBadDayColor(),
+          width: 1.0,
         ),
       ),
-      contentPadding: AppDimensions.paddingAllMedium,
+      contentPadding: const EdgeInsets.all(16.0),
       filled: true,
-      fillColor: AppColors.adaptiveSurface(context),
-    );
-  }
-  
-  // Style pour les séparateurs
-  static DividerThemeData dividerTheme(BuildContext context) {
-    return DividerThemeData(
-      color: AppColors.adaptiveSeparator(context),
-      thickness: AppDimensions.borderWidthThin,
-      space: AppDimensions.spacingMedium,
+      fillColor: _getAdaptiveSurfaceColor(context),
     );
   }
   
   // Configuration du thème pour les boutons
   static ButtonStyle primaryButtonStyle(BuildContext context) {
     return ElevatedButton.styleFrom(
-      backgroundColor: AppColors.accentBlue,
+      backgroundColor: _getAccentBlueColor(),
       foregroundColor: Colors.white,
-      padding: AppDimensions.paddingAllMedium,
-      minimumSize: const Size(AppDimensions.buttonMinWidth, AppDimensions.buttonHeightMedium),
+      padding: const EdgeInsets.all(16.0),
+      minimumSize: const Size(64.0, 48.0),
       shape: RoundedRectangleBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
       ),
-      elevation: AppDimensions.elevationNone,
+      elevation: 0,
       textStyle: actionButtonStyle(context),
     );
   }
   
   static ButtonStyle secondaryButtonStyle(BuildContext context) {
     return ElevatedButton.styleFrom(
-      backgroundColor: AppColors.adaptiveSurface(context),
+      backgroundColor: _getAdaptiveSurfaceColor(context),
       foregroundColor: AppColors.adaptiveTextPrimary(context),
-      padding: AppDimensions.paddingAllMedium,
-      minimumSize: const Size(AppDimensions.buttonMinWidth, AppDimensions.buttonHeightMedium),
+      padding: const EdgeInsets.all(16.0),
+      minimumSize: const Size(64.0, 48.0),
       shape: RoundedRectangleBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
         side: BorderSide(
-          color: AppColors.adaptiveSeparator(context),
-          width: AppDimensions.borderWidthNormal,
+          color: _getAdaptiveSeparatorColor(context),
+          width: 1.0,
         ),
       ),
-      elevation: AppDimensions.elevationNone,
+      elevation: 0,
       textStyle: actionButtonStyle(context),
     );
   }
   
   static ButtonStyle textButtonStyle(BuildContext context) {
     return TextButton.styleFrom(
-      foregroundColor: AppColors.accentBlue,
-      padding: AppDimensions.paddingAllSmall,
-      minimumSize: const Size(AppDimensions.buttonMinWidth, AppDimensions.buttonHeightSmall),
+      foregroundColor: _getAccentBlueColor(),
+      padding: const EdgeInsets.all(12.0),
+      minimumSize: const Size(64.0, 40.0),
       shape: RoundedRectangleBorder(
-        borderRadius: AppDimensions.borderRadiusAll(AppDimensions.borderRadiusMedium),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       textStyle: actionButtonStyle(context),
     );
@@ -486,4 +474,139 @@ class AppStyles {
   // Animation curves pour une sensation iOS
   static Curve iosAnimationCurve = Curves.easeInOutCubic;
   static Duration iosAnimationDuration = const Duration(milliseconds: 300);
+  
+  // ===== MÉTHODES D'ASSISTANCE =====
+  
+  // Méthode pour obtenir la taille de police
+  static double _getFontSize(String sizeName) {
+    switch (sizeName) {
+      case 'displayLarge':
+        return 57.0;
+      case 'displayMedium':
+        return 45.0;
+      case 'displaySmall':
+        return 36.0;
+      case 'xxxLarge':
+        return 34.0;
+      case 'xxLarge':
+        return 28.0;
+      case 'xLarge':
+        return 24.0;
+      case 'large':
+        return 20.0;
+      case 'medium':
+        return 16.0;
+      case 'small':
+        return 14.0;
+      case 'micro':
+        return 12.0;
+      default:
+        return 16.0;
+    }
+  }
+  
+  // Méthode pour obtenir la couleur de statut
+  static Color _getStatusColor(int value) {
+    if (value == 1) {
+      return _getGoodDayColor();
+    } else if (value == 2) {
+      return _getNeutralDayColor();
+    } else if (value == 3) {
+      return _getBadDayColor();
+    } else {
+      return Colors.grey.shade300;
+    }
+  }
+  
+  // Méthode pour obtenir la couleur d'ombre adaptative
+  static Color _getAdaptiveShadowColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    if (brightness == Brightness.light) {
+      return Colors.black.withOpacity(0.05);
+    } else {
+      return Colors.black.withOpacity(0.2);
+    }
+  }
+  
+  // Méthodes pour obtenir les couleurs (avec fallback si AppColors n'existe pas)
+  static Color _getAdaptiveSurfaceColor(BuildContext context) {
+    try {
+      return AppColors.adaptiveSurface(context);
+    } catch (e) {
+      final brightness = Theme.of(context).brightness;
+      return brightness == Brightness.light 
+          ? Colors.white 
+          : Colors.grey.shade900;
+    }
+  }
+  
+  static Color _getAdaptiveSeparatorColor(BuildContext context) {
+    try {
+      return AppColors.adaptiveSeparator(context);
+    } catch (e) {
+      final brightness = Theme.of(context).brightness;
+      return brightness == Brightness.light 
+          ? Colors.grey.shade300 
+          : Colors.grey.shade700;
+    }
+  }
+  
+  static Color _getTextSecondaryColor(BuildContext context) {
+    try {
+      return AppColors.textSecondaryLight;
+    } catch (e) {
+      final brightness = Theme.of(context).brightness;
+      return brightness == Brightness.light 
+          ? Colors.grey.shade600 
+          : Colors.grey.shade400;
+    }
+  }
+  
+  static Color _getTextPrimaryDarkColor() {
+    try {
+      return AppColors.textPrimaryDark;
+    } catch (e) {
+      return Colors.grey.shade900;
+    }
+  }
+  
+  static Color _getGoodDayColor() {
+    try {
+      return AppColors.goodDay;
+    } catch (e) {
+      return const Color(0xFF34C759); // Vert iOS
+    }
+  }
+  
+  static Color _getBadDayColor() {
+    try {
+      return AppColors.badDay;
+    } catch (e) {
+      return const Color(0xFFFF3B30); // Rouge iOS
+    }
+  }
+  
+  static Color _getNeutralDayColor() {
+    try {
+      return AppColors.systemYellow;
+    } catch (e) {
+      return const Color(0xFFFFCC00); // Jaune iOS
+    }
+  }
+  
+  static Color _getSystemYellowColor() {
+    try {
+      return AppColors.systemYellow;
+    } catch (e) {
+      return const Color(0xFFFF9500); // Orange iOS
+    }
+  }
+  
+  static Color _getAccentBlueColor() {
+    try {
+      return AppColors.accentBlue;
+    } catch (e) {
+      return const Color(0xFF007AFF); // Bleu iOS
+    }
+  }
 }

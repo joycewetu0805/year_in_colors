@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_dimensions.dart';
-import '../constants/app_styles.dart';
 
 /// Widgets réutilisables liés au thème pour une cohérence visuelle
+
+/// Obtient la couleur de statut selon la valeur
+Color _getStatusColor(int value) {
+  switch (value) {
+    case 1:
+      return AppColors.goodDay;
+    case -1:
+      return AppColors.badDay;
+    default:
+      return AppColors.neutralDay;
+  }
+}
+
+/// Obtient l'emoji de statut selon la valeur
+String _getStatusEmoji(int value) {
+  switch (value) {
+    case 1:
+      return '😊';
+    case -1:
+      return '😔';
+    default:
+      return '😐';
+  }
+}
 
 /// Carte avec fond adaptatif et ombre
 class AppCard extends StatelessWidget {
@@ -14,7 +37,7 @@ class AppCard extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final BoxBorder? border;
   final bool elevated;
-  
+
   const AppCard({
     Key? key,
     required this.child,
@@ -25,22 +48,25 @@ class AppCard extends StatelessWidget {
     this.border,
     this.elevated = true,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).colorScheme.surface,
-        borderRadius: borderRadius ?? BorderRadius.circular(AppDimensions.borderRadiusLarge),
+        borderRadius:
+            borderRadius ?? BorderRadius.circular(AppDimensions.borderRadiusLarge),
         border: border,
-        boxShadow: elevated ? [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ] : null,
+        boxShadow: elevated
+            ? [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
       ),
       child: Padding(
         padding: padding,
@@ -58,7 +84,7 @@ class PrimaryButton extends StatelessWidget {
   final bool isLoading;
   final IconData? icon;
   final Color? backgroundColor;
-  
+
   const PrimaryButton({
     Key? key,
     required this.text,
@@ -68,7 +94,7 @@ class PrimaryButton extends StatelessWidget {
     this.icon,
     this.backgroundColor,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -76,7 +102,8 @@ class PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.primary,
+          backgroundColor:
+              backgroundColor ?? Theme.of(context).colorScheme.primary,
           foregroundColor: Theme.of(context).colorScheme.onPrimary,
           padding: AppDimensions.paddingAllMedium,
           shape: RoundedRectangleBorder(
@@ -101,7 +128,10 @@ class PrimaryButton extends StatelessWidget {
                   ],
                   Text(
                     text,
-                    style: AppStyles.actionButtonStyle(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -117,7 +147,7 @@ class DayStatusButton extends StatelessWidget {
   final VoidCallback onTap;
   final String label;
   final IconData icon;
-  
+
   const DayStatusButton({
     Key? key,
     required this.value,
@@ -126,11 +156,11 @@ class DayStatusButton extends StatelessWidget {
     required this.label,
     required this.icon,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    final color = AppColors.getStatusColor(value);
-    
+    final color = _getStatusColor(value);
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -143,7 +173,9 @@ class DayStatusButton extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(
                 color: color,
-                width: isSelected ? AppDimensions.borderWidthThick : AppDimensions.borderWidthNormal,
+                width: isSelected
+                    ? AppDimensions.borderWidthThick
+                    : AppDimensions.borderWidthNormal,
               ),
             ),
             child: Icon(
@@ -156,9 +188,11 @@ class DayStatusButton extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: isSelected ? color : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
+                  color: isSelected
+                      ? color
+                      : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
           ),
         ],
       ),
@@ -171,19 +205,19 @@ class StatusIndicator extends StatelessWidget {
   final int value;
   final double size;
   final bool showEmoji;
-  
+
   const StatusIndicator({
     Key? key,
     required this.value,
     this.size = AppDimensions.statusIndicatorSize,
     this.showEmoji = false,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    final color = AppColors.getStatusColor(value);
-    final emoji = AppColors.getStatusEmoji(value);
-    
+    final color = _getStatusColor(value);
+    final emoji = _getStatusEmoji(value);
+
     return Container(
       width: size,
       height: size,
@@ -213,12 +247,15 @@ class StatusIndicator extends StatelessWidget {
       ),
     );
   }
-  
+
   IconData _getIconForValue(int value) {
     switch (value) {
-      case 1: return Icons.thumb_up;
-      case -1: return Icons.thumb_down;
-      default: return Icons.remove;
+      case 1:
+        return Icons.thumb_up;
+      case -1:
+        return Icons.thumb_down;
+      default:
+        return Icons.remove;
     }
   }
 }
@@ -230,7 +267,7 @@ class CalendarDayCell extends StatelessWidget {
   final bool isToday;
   final VoidCallback? onTap;
   final double size;
-  
+
   const CalendarDayCell({
     Key? key,
     required this.date,
@@ -239,11 +276,11 @@ class CalendarDayCell extends StatelessWidget {
     this.onTap,
     this.size = AppDimensions.dayCellSize,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    final color = AppColors.getStatusColor(value);
-    
+    final color = _getStatusColor(value);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -264,7 +301,9 @@ class CalendarDayCell extends StatelessWidget {
             style: TextStyle(
               fontSize: AppDimensions.fontSizeSmall,
               fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-              color: value != 0 ? Colors.white : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              color: value != 0
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
         ),
@@ -279,7 +318,7 @@ class ProgressBar extends StatelessWidget {
   final Color color;
   final double height;
   final BorderRadiusGeometry? borderRadius;
-  
+
   const ProgressBar({
     Key? key,
     required this.progress,
@@ -287,11 +326,11 @@ class ProgressBar extends StatelessWidget {
     this.height = 8,
     this.borderRadius,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     final borderRadius = this.borderRadius ?? BorderRadius.circular(height / 2);
-    
+
     return Container(
       height: height,
       decoration: BoxDecoration(
@@ -317,14 +356,14 @@ class StatsCard extends StatelessWidget {
   final String title;
   final Map<String, dynamic> stats;
   final Color? titleColor;
-  
+
   const StatsCard({
     Key? key,
     required this.title,
     required this.stats,
     this.titleColor,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return AppCard(
@@ -335,34 +374,43 @@ class StatsCard extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: titleColor ?? Theme.of(context).colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
+                  color: titleColor ?? Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: AppDimensions.spacingLarge),
           ...stats.entries.map((entry) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     entry.key,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        ),
                   ),
                   if (entry.value is String)
                     Text(
                       entry.value,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
+                            fontWeight: FontWeight.w500,
+                          ),
                     )
                   else if (entry.value is double)
                     Text(
                       '${(entry.value as double).toStringAsFixed(1)}%',
-                      style: AppStyles.percentageStyle(context, entry.value as double),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: (entry.value as double) >= 50
+                            ? AppColors.goodDay
+                            : AppColors.badDay,
+                      ),
                     )
                 ],
               ),
@@ -379,14 +427,14 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String? subtitle;
   final Widget? trailing;
-  
+
   const SectionHeader({
     Key? key,
     required this.title,
     this.subtitle,
     this.trailing,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -403,16 +451,19 @@ class SectionHeader extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppDimensions.spacingMicro),
                   Text(
                     subtitle!,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.6),
+                        ),
                   ),
                 ],
               ],

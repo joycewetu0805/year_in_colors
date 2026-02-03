@@ -1,129 +1,93 @@
 import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
 
-/// Données d'export pour sauvegarde ou partage
+import 'day_entity.dart';
+import 'app_settings_entity.dart';
+
 class ExportDataEntity {
   final int year;
   final List<DayEntity> days;
   final AppSettingsEntity settings;
   final DateTime exportDate;
   final String version;
+  final String checksum;
 
   const ExportDataEntity({
     required this.year,
     required this.days,
     required this.settings,
     required this.exportDate,
+    required this.checksum,
     this.version = '1.0',
   });
 
-  /// Crée un export à partir des données actuelles
   factory ExportDataEntity.create({
     required int year,
     required List<DayEntity> days,
     required AppSettingsEntity settings,
   }) {
+    final exportDate = DateTime.now();
+    final checksum = _calculateChecksumStatic(
+      year: year,
+      daysCount: days.length,
+      exportDate: exportDate,
+    );
+
     return ExportDataEntity(
       year: year,
       days: days,
       settings: settings,
-      exportDate: DateTime.now(),
+      exportDate: exportDate,
       version: '1.0',
+      checksum: checksum,
     );
   }
 
-  /// Convertit en JSON pour le stockage
   Map<String, dynamic> toJson() {
     return {
       'year': year,
-      'days': days.map((day) => _dayToJson(day)).toList(),
+      'days': days.map(_dayToJson).toList(),
       'settings': _settingsToJson(settings),
       'exportDate': exportDate.toIso8601String(),
       'version': version,
-      'checksum': _calculateChecksum(),
+      'checksum': checksum,
     };
   }
 
-  /// Crée depuis JSON
   factory ExportDataEntity.fromJson(Map<String, dynamic> json) {
     return ExportDataEntity(
-      year: json['year'] as int,
-      days: (json['days'] as List).map((dayJson) => _dayFromJson(dayJson)).toList(),
+      year: json['year'],
+      days: (json['days'] as List).map((e) => _dayFromJson(e)).toList(),
       settings: _settingsFromJson(json['settings']),
       exportDate: DateTime.parse(json['exportDate']),
       version: json['version'] ?? '1.0',
+      checksum: json['checksum'],
     );
   }
 
-  /// Convertit en JSON string pour le partage
-  String toJsonString() {
-    return jsonEncode(toJson());
-  }
+  String toJsonString() => jsonEncode(toJson());
 
-  /// Crée depuis JSON string
-  factory ExportDataEntity.fromJsonString(String jsonString) {
-    return ExportDataEntity.fromJson(jsonDecode(jsonString));
-  }
-
-  /// Convertit en CSV pour l'export
+  /// Convertit les données en format CSV
   String toCsv() {
-    final csv = StringBuffer();
-    
-    // En-tête
-    csv.writeln('Date,Valeur,Emoji,Statut');
-    
-    // Données
+    final buffer = StringBuffer();
+    buffer.writeln('Date,Value,Status');
     for (final day in days) {
-      csv.writeln('${day.date.toIso8601String()},'
-          '${day.value.toInt()},'
-          '${day.value.emoji},'
-          '${day.value.label}');
+      final status = day.isGoodDay ? 'good' : (day.isBadDay ? 'bad' : 'neutral');
+      buffer.writeln('${day.date.toIso8601String().split('T')[0]},${day.value.toInt()},$status');
     }
-    
-    return csv.toString();
+    return buffer.toString();
   }
 
-  /// Statistiques de l'export
-  Map<String, dynamic> get stats {
-    final markedDays = days.where((day) => day.isMarked).length;
-    final goodDays = days.where((day) => day.isGoodDay).length;
-    final badDays = days.where((day) => day.isBadDay).length;
-    
-    return {
-      'totalDays': days.length,
-      'markedDays': markedDays,
-      'goodDays': goodDays,
-      'badDays': badDays,
-      'exportSize': toJsonString().length,
-      'isValid': _validateData(),
-    };
+  static String _calculateChecksumStatic({
+    required int year,
+    required int daysCount,
+    required DateTime exportDate,
+  }) {
+    final data = '$year$daysCount${exportDate.millisecondsSinceEpoch}';
+    return sha256.convert(utf8.encode(data)).toString();
   }
 
-  /// Vérifie l'intégrité des données
-  bool _validateData() {
-    try {
-      // Vérifie que toutes les dates sont dans l'année spécifiée
-      for (final day in days) {
-        if (day.date.year != year) return false;
-      }
-      
-      // Vérifie le checksum si présent
-      final storedChecksum = toJson()['checksum'];
-      final calculatedChecksum = _calculateChecksum();
-      
-      return storedChecksum == null || storedChecksum == calculatedChecksum;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /// Calcule un checksum simple pour vérifier l'intégrité
-  String _calculateChecksum() {
-    final data = '${year}${days.length}${exportDate.millisecondsSinceEpoch}';
-    final bytes = utf8.encode(data);
-    return sha256.convert(bytes).toString();
-  }
-
-  // Méthodes de conversion helper
   static Map<String, dynamic> _dayToJson(DayEntity day) {
     return {
       'date': day.date.toIso8601String(),
@@ -138,9 +102,32 @@ class ExportDataEntity {
     );
   }
 
+  static String _themeModeToString(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return 'light';
+      case ThemeMode.dark:
+        return 'dark';
+      case ThemeMode.system:
+        return 'system';
+    }
+  }
+
+  static ThemeMode _stringToThemeMode(String value) {
+    switch (value) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      case 'system':
+      default:
+        return ThemeMode.system;
+    }
+  }
+
   static Map<String, dynamic> _settingsToJson(AppSettingsEntity settings) {
     return {
-      'themeMode': settings.themeMode.toStorageString(),
+      'themeMode': _themeModeToString(settings.themeMode),
       'languageCode': settings.languageCode,
       'showEmojis': settings.showEmojis,
       'showAnimations': settings.showAnimations,
@@ -148,15 +135,16 @@ class ExportDataEntity {
       'lastBackupDate': settings.lastBackupDate?.toIso8601String(),
       'autoBackupEnabled': settings.autoBackupEnabled,
       'notificationsEnabled': settings.notificationsEnabled,
-      'notificationTime': '${settings.notificationTime.hour}:${settings.notificationTime.minute}',
+      'notificationTime':
+          '${settings.notificationTime.hour}:${settings.notificationTime.minute}',
       'firstLaunchCompleted': settings.firstLaunchCompleted,
     };
   }
 
   static AppSettingsEntity _settingsFromJson(Map<String, dynamic> json) {
     return AppSettingsEntity(
-      themeMode: ThemeMode.fromString(json['themeMode']),
-      languageCode: json['languageCode'],
+      themeMode: _stringToThemeMode(json['themeMode'] ?? 'system'),
+      languageCode: json['languageCode'] ?? 'fr',
       showEmojis: json['showEmojis'] ?? true,
       showAnimations: json['showAnimations'] ?? true,
       showConfetti: json['showConfetti'] ?? true,
@@ -175,7 +163,3 @@ class ExportDataEntity {
     );
   }
 }
-
-// Import pour SHA256
-import 'package:crypto/crypto.dart';
-import 'package:flutter/material.dart';

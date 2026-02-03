@@ -80,4 +80,20 @@ class DayModel {
   String toString() {
     return 'DayModel(date: $date, value: $value)';
   }
+
+  /// Sérialisation JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date.toIso8601String(),
+      'value': value,
+    };
+  }
+
+  /// Désérialisation JSON
+  factory DayModel.fromJson(Map<String, dynamic> json) {
+    return DayModel(
+      date: DateTime.parse(json['date']),
+      value: json['value'] as int,
+    );
+  }
 }

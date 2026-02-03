@@ -24,8 +24,6 @@ class HiveConfig {
     await Hive.openBox<DayModel>(_daysBoxName);
     await Hive.openBox<SettingsModel>(_settingsBoxName);
     await Hive.openBox<ExportModel>(_exportsBoxName);
-    
-    print('Hive initialized successfully');
   }
   
   static Box<DayModel> get daysBox => Hive.box<DayModel>(_daysBoxName);
@@ -43,10 +41,10 @@ class HiveConfig {
   }
   
   static Future<int> getDatabaseSize() async {
-    final daysSize = await daysBox.count();
-    final settingsSize = await settingsBox.count();
-    final exportsSize = await exportsBox.count();
-    
+    final daysSize = daysBox.length;
+    final settingsSize = settingsBox.length;
+    final exportsSize = exportsBox.length;
+
     return daysSize + settingsSize + exportsSize;
   }
   

@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'day_entity.dart';
 import 'month_summary_entity.dart';
 
@@ -107,7 +108,7 @@ class YearSummaryEntity {
     if (months.length < 3) return YearTrend.neutral;
 
     // Analyse des 3 derniers mois
-    final recentMonths = months.sublist(max(0, months.length - 3));
+    final recentMonths = months.sublist(math.max(0, months.length - 3));
     final improvingMonths = recentMonths.where((m) => m.trend == MonthTrend.improving).length;
     final decliningMonths = recentMonths.where((m) => m.trend == MonthTrend.declining).length;
 
@@ -241,8 +242,6 @@ $encouragementMessage
       default: return '';
     }
   }
-
-  int max(int a, int b) => a > b ? a : b;
 }
 
 /// Tendance annuelle

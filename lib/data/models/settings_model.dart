@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
+
 import '../../domain/entities/app_settings_entity.dart';
 
 part 'settings_model.g.dart';
@@ -7,36 +8,36 @@ part 'settings_model.g.dart';
 @HiveType(typeId: 2)
 class SettingsModel {
   @HiveField(0)
-  final String themeMode; // 'light', 'dark', 'system'
-  
+  final String themeMode; // 'light' | 'dark' | 'system'
+
   @HiveField(1)
   final String languageCode;
-  
+
   @HiveField(2)
   final bool showEmojis;
-  
+
   @HiveField(3)
   final bool showAnimations;
-  
+
   @HiveField(4)
   final bool showConfetti;
-  
+
   @HiveField(5)
   final DateTime? lastBackupDate;
-  
+
   @HiveField(6)
   final bool autoBackupEnabled;
-  
+
   @HiveField(7)
   final bool notificationsEnabled;
-  
+
   @HiveField(8)
-  final String notificationTime; // Format: "HH:mm"
-  
+  final String notificationTime; // "HH:mm"
+
   @HiveField(9)
   final bool firstLaunchCompleted;
-  
-  SettingsModel({
+
+  const SettingsModel({
     required this.themeMode,
     required this.languageCode,
     required this.showEmojis,
@@ -48,8 +49,11 @@ class SettingsModel {
     required this.notificationTime,
     required this.firstLaunchCompleted,
   });
-  
-  // Convertir depuis l'entité métier
+
+  /* ============================
+     ENTITY → MODEL
+  ============================ */
+
   factory SettingsModel.fromEntity(AppSettingsEntity entity) {
     return SettingsModel(
       themeMode: _themeModeToString(entity.themeMode),
@@ -60,16 +64,20 @@ class SettingsModel {
       lastBackupDate: entity.lastBackupDate,
       autoBackupEnabled: entity.autoBackupEnabled,
       notificationsEnabled: entity.notificationsEnabled,
-      notificationTime: '${entity.notificationTime.hour.toString().padLeft(2, '0')}:'
+      notificationTime:
+          '${entity.notificationTime.hour.toString().padLeft(2, '0')}:'
           '${entity.notificationTime.minute.toString().padLeft(2, '0')}',
       firstLaunchCompleted: entity.firstLaunchCompleted,
     );
   }
-  
-  // Convertir vers l'entité métier
+
+  /* ============================
+     MODEL → ENTITY
+  ============================ */
+
   AppSettingsEntity toEntity() {
-    final timeParts = notificationTime.split(':');
-    
+    final parts = notificationTime.split(':');
+
     return AppSettingsEntity(
       themeMode: _stringToThemeMode(themeMode),
       languageCode: languageCode,
@@ -80,14 +88,17 @@ class SettingsModel {
       autoBackupEnabled: autoBackupEnabled,
       notificationsEnabled: notificationsEnabled,
       notificationTime: TimeOfDay(
-        hour: int.parse(timeParts[0]),
-        minute: int.parse(timeParts[1]),
+        hour: int.parse(parts[0]),
+        minute: int.parse(parts[1]),
       ),
       firstLaunchCompleted: firstLaunchCompleted,
     );
   }
-  
-  // Copier avec modifications
+
+  /* ============================
+     COPY
+  ============================ */
+
   SettingsModel copyWith({
     String? themeMode,
     String? languageCode,
@@ -108,15 +119,20 @@ class SettingsModel {
       showConfetti: showConfetti ?? this.showConfetti,
       lastBackupDate: lastBackupDate ?? this.lastBackupDate,
       autoBackupEnabled: autoBackupEnabled ?? this.autoBackupEnabled,
-      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      notificationsEnabled:
+          notificationsEnabled ?? this.notificationsEnabled,
       notificationTime: notificationTime ?? this.notificationTime,
-      firstLaunchCompleted: firstLaunchCompleted ?? this.firstLaunchCompleted,
+      firstLaunchCompleted:
+          firstLaunchCompleted ?? this.firstLaunchCompleted,
     );
   }
-  
-  // Paramètres par défaut
+
+  /* ============================
+     DEFAULT
+  ============================ */
+
   factory SettingsModel.defaultSettings() {
-    return SettingsModel(
+    return const SettingsModel(
       themeMode: 'system',
       languageCode: 'fr',
       showEmojis: true,
@@ -129,10 +145,13 @@ class SettingsModel {
       firstLaunchCompleted: false,
     );
   }
-  
-  // Helper methods
-  static String _themeModeToString(ThemeMode themeMode) {
-    switch (themeMode) {
+
+  /* ============================
+     HELPERS
+  ============================ */
+
+  static String _themeModeToString(ThemeMode mode) {
+    switch (mode) {
       case ThemeMode.light:
         return 'light';
       case ThemeMode.dark:
@@ -141,7 +160,7 @@ class SettingsModel {
         return 'system';
     }
   }
-  
+
   static ThemeMode _stringToThemeMode(String value) {
     switch (value) {
       case 'light':
@@ -153,42 +172,71 @@ class SettingsModel {
         return ThemeMode.system;
     }
   }
-  
+
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    
-    return other is SettingsModel &&
-        other.themeMode == themeMode &&
-        other.languageCode == languageCode &&
-        other.showEmojis == showEmojis &&
-        other.showAnimations == showAnimations &&
-        other.showConfetti == showConfetti &&
-        other.lastBackupDate == lastBackupDate &&
-        other.autoBackupEnabled == autoBackupEnabled &&
-        other.notificationsEnabled == notificationsEnabled &&
-        other.notificationTime == notificationTime &&
-        other.firstLaunchCompleted == firstLaunchCompleted;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SettingsModel &&
+          themeMode == other.themeMode &&
+          languageCode == other.languageCode &&
+          showEmojis == other.showEmojis &&
+          showAnimations == other.showAnimations &&
+          showConfetti == other.showConfetti &&
+          lastBackupDate == other.lastBackupDate &&
+          autoBackupEnabled == other.autoBackupEnabled &&
+          notificationsEnabled == other.notificationsEnabled &&
+          notificationTime == other.notificationTime &&
+          firstLaunchCompleted == other.firstLaunchCompleted;
+
+  @override
+  int get hashCode => Object.hash(
+        themeMode,
+        languageCode,
+        showEmojis,
+        showAnimations,
+        showConfetti,
+        lastBackupDate,
+        autoBackupEnabled,
+        notificationsEnabled,
+        notificationTime,
+        firstLaunchCompleted,
+      );
+
+  @override
+  String toString() =>
+      'SettingsModel(themeMode: $themeMode, language: $languageCode)';
+
+  /// Sérialisation JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'themeMode': themeMode,
+      'languageCode': languageCode,
+      'showEmojis': showEmojis,
+      'showAnimations': showAnimations,
+      'showConfetti': showConfetti,
+      'lastBackupDate': lastBackupDate?.toIso8601String(),
+      'autoBackupEnabled': autoBackupEnabled,
+      'notificationsEnabled': notificationsEnabled,
+      'notificationTime': notificationTime,
+      'firstLaunchCompleted': firstLaunchCompleted,
+    };
   }
-  
-  @override
-  int get hashCode {
-    return Object.hash(
-      themeMode,
-      languageCode,
-      showEmojis,
-      showAnimations,
-      showConfetti,
-      lastBackupDate,
-      autoBackupEnabled,
-      notificationsEnabled,
-      notificationTime,
-      firstLaunchCompleted,
+
+  /// Désérialisation JSON
+  factory SettingsModel.fromJson(Map<String, dynamic> json) {
+    return SettingsModel(
+      themeMode: json['themeMode'] ?? 'system',
+      languageCode: json['languageCode'] ?? 'fr',
+      showEmojis: json['showEmojis'] ?? true,
+      showAnimations: json['showAnimations'] ?? true,
+      showConfetti: json['showConfetti'] ?? true,
+      lastBackupDate: json['lastBackupDate'] != null
+          ? DateTime.parse(json['lastBackupDate'])
+          : null,
+      autoBackupEnabled: json['autoBackupEnabled'] ?? false,
+      notificationsEnabled: json['notificationsEnabled'] ?? false,
+      notificationTime: json['notificationTime'] ?? '20:00',
+      firstLaunchCompleted: json['firstLaunchCompleted'] ?? false,
     );
-  }
-  
-  @override
-  String toString() {
-    return 'SettingsModel(themeMode: $themeMode, language: $languageCode)';
   }
 }

@@ -57,12 +57,14 @@ sealed class ResultEntity<T> {
     required R Function(String message, Object? error, StackTrace? stackTrace) error,
     required R Function() loading,
   }) {
-    return switch (this) {
-      SuccessResult<T>(:final data) => success(data),
-      ErrorResult<T>(:final message, :final error, :final stackTrace) =>
-        error(message, error, stackTrace),
-      LoadingResult<T>() => loading(),
-    };
+    final self = this;
+    if (self is SuccessResult<T>) {
+      return success(self.data);
+    } else if (self is ErrorResult<T>) {
+      return error(self.message, self.error, self.stackTrace);
+    } else {
+      return loading();
+    }
   }
 }
 

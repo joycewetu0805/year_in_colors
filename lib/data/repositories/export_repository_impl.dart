@@ -66,6 +66,20 @@ class ExportRepositoryImpl implements ExportRepository {
       );
     }
   }
+
+  @override
+  Future<ResultEntity<List<ExportDataEntity>>> getExportsForYear(int year) async {
+    try {
+      final exports = await _localStorage.getExportsForYear(year);
+      return ResultEntity.success(exports);
+    } catch (error, stackTrace) {
+      return ResultEntity.error(
+        'Erreur lors de la récupération des exports pour l\'année $year',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
   
   @override
   Future<ResultEntity<ExportDataEntity?>> getLastExport() async {

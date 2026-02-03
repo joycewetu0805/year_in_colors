@@ -8,7 +8,7 @@ class MonthSummaryEntity {
   final DateTime startDate;
   final DateTime endDate;
 
-  const MonthSummaryEntity({
+  MonthSummaryEntity({
     required this.year,
     required this.month,
     required this.days,
